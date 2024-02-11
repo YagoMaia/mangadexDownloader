@@ -2,10 +2,11 @@ import json
 import os
 import config
 from classes.manga import Manga
+from classes.capitulos import Capitulos
 # * Mangas no Json Mangas Diários
 
 metodos_mangas = Manga()
-
+metodo_capitulos = Capitulos()
 class MangasDiarios:
 
     def atualizar_json(self, mangas_json):
@@ -30,18 +31,18 @@ class MangasDiarios:
             ultima_cap_add = dados["data"]['attributes']['latestUploadedChapter']
             if ultima_cap_add != manga['Ultimo_Cap']:
                 print("\n   Capitulo novo a ser lido")
-                novo_cap_a_ser_lido = metodos_mangas.listar_ultimo_capitulo(manga['Id'])
+                novo_cap_a_ser_lido = metodo_capitulos.listar_ultimo_capitulo(manga['Id'])
                 n_capitulo = novo_cap_a_ser_lido['attributes']["chapter"]
                 titulo_capitulo = novo_cap_a_ser_lido['attributes']['title']
                 print(f"    Capitulo: {n_capitulo} - {titulo_capitulo}")
                 manga['Ultimo_Cap'] = ultima_cap_add
             else:
-                print("\n   Nenhum capitulo novo adicionado")
+                print("\n  Nenhum capitulo novo adicionado")
         self.atualizar_json(mangas_atuais)
 
     def adicionar_manga_diario(self, nome_manga):
 
-        manga_selecionado, mensagem = metodos_mangas.listar_mangas(nome_manga)
+        manga_selecionado = metodos_mangas.listar_mangas(nome_manga)
         if manga_selecionado is not None:
             manga_id = manga_selecionado['id']
             nome_manga = manga_selecionado["attributes"]['title']['en']

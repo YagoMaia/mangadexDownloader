@@ -31,9 +31,10 @@ class Capitulos:
         return chap.json()
 
     def listar_capitulos(self, manga_id):
-        r1 = requests.get(f"{config.BASE_URL}/manga/{manga_id}/feed", params={"translatedLanguage[]": languages, 'limit':500})
+        r1 = requests.get(f"{config.BASE_URL}/manga/{manga_id}/feed", params={"translatedLanguage[]": languages, 'limit':500, 'order[chapter]':'asc'})
         if r1.json()['total'] > 500:
             print("    Mais de 500 capitulos encontrados")
+        #limit = r1.json()['total'] if r1.json()['total'] <= 500 else 500
         #r2 = requests.get(f"{config.BASE_URL}/manga/{manga_id}/feed", params={"translatedLanguage[]": languages, 'limit': limit, 'order[chapter]':'asc'})
         return r1.json()['data']
     

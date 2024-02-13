@@ -34,8 +34,6 @@ class Capitulos:
         r1 = requests.get(f"{config.BASE_URL}/manga/{manga_id}/feed", params={"translatedLanguage[]": languages, 'limit':500, 'order[chapter]':'asc'})
         if r1.json()['total'] > 500:
             print("    Mais de 500 capitulos encontrados")
-        #limit = r1.json()['total'] if r1.json()['total'] <= 500 else 500
-        #r2 = requests.get(f"{config.BASE_URL}/manga/{manga_id}/feed", params={"translatedLanguage[]": languages, 'limit': limit, 'order[chapter]':'asc'})
         return r1.json()['data']
     
     def listar_ultimo_capitulo(self, manga_id):
@@ -70,11 +68,11 @@ class Capitulos:
             
             with alive_progress.alive_bar(len(data_saver), title = f"Capitulo {num_chap} - Vol {vol_chap}") as bar:
                 for index, page in enumerate(data_saver):
-                    if not os.path.exists(f"{folder_path}/Page {index}"):
+                    if not os.path.exists(f"{folder_path}/Page {index}.png"):
                         r = requests.get(f"{host}/data-saver/{chapter_hash}/{page}")
                         if r.status_code == 404:
                             page = data[index]
                             r = requests.get(f"{host}/data/{chapter_hash}/{page}")
-                        with open(f"{folder_path}/Page {index}", mode="wb") as f:
+                        with open(f"{folder_path}/Page {index}.png", mode="wb") as f:
                             f.write(r.content)
                     bar()

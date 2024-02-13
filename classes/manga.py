@@ -48,6 +48,9 @@ class Manga:
             capitulos_listados = metodo_capitulos.organizar_capitulos(capitulos)
 
             for index, cap_vol in enumerate(capitulos_listados):
+                if index == 0 or capitulos_listados[index]['Volume'] != capitulos_listados[index - 1]['Volume']:
+                    volume = cap_vol['Volume'] if cap_vol['Volume'] is not None else "Nenhum"
+                    print(f"=========================== Volume {volume} ===========================")    
                 print(f"({index + 1}) - Capitulo {cap_vol['Num_Capitulo']} - {cap_vol['Titulo']}")
 
             #* Ajustar para poder escolher os capitulos para baixar
@@ -60,6 +63,10 @@ class Manga:
             if "-" in escolha_cap:
                 cap_ini, cap_fim = escolha_cap.split("-")
                 metodo_capitulos.baixar_capitulos(capitulos_listados, listar_covers, manga_id, nome_manga, int(cap_ini) - 1, int(cap_fim) - 1)
+            elif "volume" in escolha_cap:
+                volume_escolhido = escolha_cap.split()
+                capitulos_volume = [cap for cap in capitulos_listados if cap['Volume'] == volume_escolhido[1]]
+                metodo_capitulos.baixar_capitulos(capitulos_volume, listar_covers, manga_id, nome_manga, 0,  len(capitulos_volume) - 1)
             elif escolha_cap.isnumeric():
                 metodo_capitulos.baixar_capitulos(capitulos_listados, listar_covers, manga_id, nome_manga, int(escolha_cap) - 1, int(escolha_cap) - 1)
             elif escolha_cap == "todos":

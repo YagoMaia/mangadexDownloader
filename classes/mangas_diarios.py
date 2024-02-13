@@ -34,7 +34,7 @@ class MangasDiarios:
                 novo_cap_a_ser_lido = metodo_capitulos.listar_ultimo_capitulo(manga['Id'])
                 n_capitulo = novo_cap_a_ser_lido['attributes']["chapter"]
                 titulo_capitulo = novo_cap_a_ser_lido['attributes']['title']
-                print(f"    Capitulo: {n_capitulo} - {titulo_capitulo}")
+                print(f"   Capitulo: {n_capitulo} - {titulo_capitulo}")
                 manga['Ultimo_Cap'] = ultima_cap_add
             else:
                 print("\n  Nenhum capitulo novo adicionado")

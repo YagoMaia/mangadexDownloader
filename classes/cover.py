@@ -29,10 +29,10 @@ class Cover:
             cover_vol = covers[int(volume) - 1]
             cover_file = cover_vol['attributes']['fileName']
             
-            if not os.path.exists(f"{folder_volume}/Capa Volume {volume}"):
+            if not os.path.exists(f"{folder_volume}/Capa Volume {volume}.png"):
                 with alive_progress.alive_bar(1, title = f"Capa Volume {volume}") as bar:
                     r = requests.get(f"{config.PATH_COVER}/{manga_id}/{cover_file}")
-                    with open(f"{folder_volume}/Capa Volume {volume}", mode="wb") as f:
+                    with open(f"{folder_volume}/Capa Volume {volume}.png", mode="wb") as f:
                         f.write(r.content)
                     bar()
                     

@@ -72,7 +72,7 @@ class Capitulos:
             
             with alive_progress.alive_bar(len(data_saver) - 1, title = f"Capitulo {num_chap} - Vol {vol_chap}") as bar:
                 for index, page in enumerate(data_saver):
-                    if index == 0 or index == len(data_saver):
+                    if index in (0, len(data_saver)):
                         continue
                     if not os.path.exists(f"{folder_path}/Page {index}.png"):
                         r = self.session_capitulos.get(f"{host}/data-saver/{chapter_hash}/{page}")

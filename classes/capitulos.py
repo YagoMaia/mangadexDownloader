@@ -1,15 +1,19 @@
-import requests
+from requests import Session
 import utils.config as config
 import os
 import alive_progress 
 from classes.cover import Cover
+from classes.singleton import Singleton
 
 metodo_cover = Cover()
 
 languages =['pt-br']
 
-
+@Singleton
 class Capitulos:
+    def __init__(self):
+        self.session_capitulos = Session()
+    
     def remover_capitulos_repetidos(self, capitulos:list):
         capitulos_vistos = set()
         capitulos_para_remover = []
@@ -27,17 +31,17 @@ class Capitulos:
         return capitulos
 
     def buscar_dados_capitulo(self, id_capitulo):
-        chap = requests.get(f"{config.BASE_URL}/at-home/server/{id_capitulo}")
+        chap = self.session_capitulos.get(f"{config.BASE_URL}/at-home/server/{id_capitulo}")
         return chap.json()
 
     def listar_capitulos(self, manga_id):
-        r1 = requests.get(f"{config.BASE_URL}/manga/{manga_id}/feed", params={"translatedLanguage[]": languages, 'limit':500, 'order[chapter]':'asc'})
+        r1 = self.session_capitulos.get(f"{config.BASE_URL}/manga/{manga_id}/feed", params={"translatedLanguage[]": languages, 'limit':500, 'order[chapter]':'asc'})
         if r1.json()['total'] > 500:
             print("    Mais de 500 capitulos encontrados")
         return r1.json()['data']
     
     def listar_ultimo_capitulo(self, manga_id):
-        r2 = requests.get(f"{config.BASE_URL}/manga/{manga_id}/feed", params={"translatedLanguage[]": languages, 'limit': 1, 'order[chapter]':'desc'})
+        r2 = self.session_capitulos.get(f"{config.BASE_URL}/manga/{manga_id}/feed", params={"translatedLanguage[]": languages, 'limit': 1, 'order[chapter]':'desc'})
         return r2.json()['data'][0]
     
     def organizar_capitulos(self, lista_capitulos):
@@ -66,15 +70,15 @@ class Capitulos:
             
             metodo_cover.baixar_cover(covers, vol_chap, manga_id, nome_manga)
             
-            with alive_progress.alive_bar(len(data_saver), title = f"Capitulo {num_chap} - Vol {vol_chap}") as bar:
+            with alive_progress.alive_bar(len(data_saver) - 1, title = f"Capitulo {num_chap} - Vol {vol_chap}") as bar:
                 for index, page in enumerate(data_saver):
                     if index == 0 or index == len(data_saver):
                         continue
                     if not os.path.exists(f"{folder_path}/Page {index}.png"):
-                        r = requests.get(f"{host}/data-saver/{chapter_hash}/{page}")
+                        r = self.session_capitulos.get(f"{host}/data-saver/{chapter_hash}/{page}")
                         if r.status_code == 404:
                             page = data[index]
-                            r = requests.get(f"{host}/data/{chapter_hash}/{page}")
+                            r = self.session_capitulos.get(f"{host}/data/{chapter_hash}/{page}")
                         with open(f"{folder_path}/Page {index}.png", mode="wb") as f:
                             f.write(r.content)
                     bar()

@@ -1,11 +1,16 @@
-import requests
+from requests import Session
 import utils.config as config
 import os
 import alive_progress 
+from classes.singleton import Singleton
 
 languages =['pt-br']
 
+@Singleton
 class Cover:
+    def __init__(self):
+        self.session_cover = Session()
+    
     def remover_covers_repetidos(self, covers:list):
         covers_vistos = set()
         covers_para_remover = []
@@ -31,12 +36,12 @@ class Cover:
             
             if not os.path.exists(f"{folder_volume}/Capa Volume {volume}.png"):
                 with alive_progress.alive_bar(1, title = f"Capa Volume {volume}") as bar:
-                    r = requests.get(f"{config.PATH_COVER}/{manga_id}/{cover_file}")
+                    r = self.session_cover.get(f"{config.PATH_COVER}/{manga_id}/{cover_file}")
                     with open(f"{folder_volume}/Capa Volume {volume}.png", mode="wb") as f:
                         f.write(r.content)
                     bar()
                     
     def listar_covers(self, id_manga):
-        covers = requests.get(f"{config.BASE_URL}/cover", params = {"manga[]":id_manga, 'limit':100, 'order[volume]':'asc'})
+        covers = self.session_cover.get(f"{config.BASE_URL}/cover", params = {"manga[]":id_manga, 'limit':100, 'order[volume]':'asc'})
         covers_sem_repeticao = self.remover_covers_repetidos(covers.json()['data'])
         return covers_sem_repeticao

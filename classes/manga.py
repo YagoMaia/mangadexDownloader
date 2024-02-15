@@ -1,18 +1,24 @@
-import requests
+from requests import Session
 import utils.config as config
 from classes.capitulos import Capitulos
 from classes.cover import Cover
 from utils import formatação_texto
+from classes.singleton import Singleton
 
 languages =['pt-br']
 
 metodo_capitulos = Capitulos()
 metodo_cover = Cover()
 
+@Singleton
 class Manga:
+    
+    def __init__(self):
+        self.session_manga = Session()
+    
     def listar_mangas(self, titulo_manga):
         print("\n    Iniciando conexão com MangaDex\n")
-        r = requests.get(f"{config.BASE_URL}/manga", params={"title": titulo_manga})
+        r = self.session_manga.get(f"{config.BASE_URL}/manga", params={"title": titulo_manga})
         mangas_achados = [manga for manga in r.json()["data"]]
         if len(mangas_achados) != 0:
             for index, m in enumerate(mangas_achados):
@@ -23,7 +29,7 @@ class Manga:
         return None
 
     def pegar_dados_manga(self, id_manga):
-        r = requests.get(f"{config.BASE_URL}/manga/{id_manga}")
+        r = self.session_manga.get(f"{config.BASE_URL}/manga/{id_manga}")
         return r.json()        
     
     def baixar_manga(self, nome_manga):

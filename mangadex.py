@@ -1,5 +1,4 @@
 import sys
-#from utils.dados_mangas import DadosMangas
 from classes.manga import Manga
 from classes.mangas_diarios import MangasDiarios
 from utils.formatação_texto import generate_ascii_art

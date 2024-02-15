@@ -1,5 +1,5 @@
 import requests
-import config
+import utils.config as config
 import os
 import alive_progress 
 

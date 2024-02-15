@@ -1,6 +1,6 @@
 import json
 import os
-import config
+import utils.config as config
 from classes.manga import Manga
 from classes.capitulos import Capitulos
 # * Mangas no Json Mangas Diários

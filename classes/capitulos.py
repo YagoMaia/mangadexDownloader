@@ -1,5 +1,5 @@
 import requests
-import config
+import utils.config as config
 import os
 import alive_progress 
 from classes.cover import Cover
@@ -68,6 +68,8 @@ class Capitulos:
             
             with alive_progress.alive_bar(len(data_saver), title = f"Capitulo {num_chap} - Vol {vol_chap}") as bar:
                 for index, page in enumerate(data_saver):
+                    if index == 0 or index == len(data_saver):
+                        continue
                     if not os.path.exists(f"{folder_path}/Page {index}.png"):
                         r = requests.get(f"{host}/data-saver/{chapter_hash}/{page}")
                         if r.status_code == 404:

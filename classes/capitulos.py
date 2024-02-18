@@ -1,4 +1,5 @@
 from requests import Session
+import requests
 import utils.config as config
 import os
 import alive_progress 
@@ -58,27 +59,28 @@ class Capitulos:
             if vol_chap == None:
                 vol_chap = "Nenhum"
             
-            chap = self.buscar_dados_capitulo(chap_id)
-
             folder_path = f"/mnt/76C08D67C08D2E85/Mangás/{nome_manga}/Volume {vol_chap}/Capitulo {num_chap}"
-            os.makedirs(folder_path, exist_ok=True)
-            
-            host = chap["baseUrl"]
-            chapter_hash = chap["chapter"]["hash"]
-            data_saver = chap["chapter"]["dataSaver"]
-            data = chap["chapter"]["data"]
-            
-            metodo_cover.baixar_cover(covers, vol_chap, manga_id, nome_manga)
-            
-            with alive_progress.alive_bar(len(data_saver) - 1, title = f"Capitulo {num_chap} - Vol {vol_chap}") as bar:
-                for index, page in enumerate(data_saver):
-                    if index in (0, len(data_saver)):
-                        continue
-                    if not os.path.exists(f"{folder_path}/Page {index}.png"):
-                        r = self.session_capitulos.get(f"{host}/data-saver/{chapter_hash}/{page}")
-                        if r.status_code == 404:
-                            page = data[index]
-                            r = self.session_capitulos.get(f"{host}/data/{chapter_hash}/{page}")
-                        with open(f"{folder_path}/Page {index}.png", mode="wb") as f:
-                            f.write(r.content)
-                    bar()
+            if not os.path.exists(folder_path):
+                chap = self.buscar_dados_capitulo(chap_id)
+
+                os.makedirs(folder_path, exist_ok=True)
+                
+                host = chap["baseUrl"]
+                chapter_hash = chap["chapter"]["hash"]
+                data_saver = chap["chapter"]["dataSaver"]
+                data = chap["chapter"]["data"]
+                
+                metodo_cover.baixar_cover(covers, vol_chap, manga_id, nome_manga)
+                
+                with alive_progress.alive_bar(len(data_saver) - 1, title = f"Capitulo {num_chap} - Vol {vol_chap}") as bar:
+                    for index, page in enumerate(data_saver):
+                        if index in (0, len(data_saver)):
+                            continue
+                        if not os.path.exists(f"{folder_path}/Page {index}.png"):
+                            r = self.session_capitulos.get(f"{host}/data-saver/{chapter_hash}/{page}")
+                            if r.status_code == 404:
+                                page = data[index]
+                                r = self.session_capitulos.get(f"{host}/data/{chapter_hash}/{page}")
+                            with open(f"{folder_path}/Page {index}.png", mode="wb") as f:
+                                f.write(r.content)
+                        bar()

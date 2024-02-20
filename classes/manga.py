@@ -23,8 +23,8 @@ class Manga:
         if len(mangas_achados) != 0:
             for index, m in enumerate(mangas_achados):
                 title = m["attributes"]['title']['en']
-                print(f"[{index + 1}] - {title}")
-            resp = int(input("\n    Qual mangá deseja selecionar? ")) - 1
+                print(f"   [{index + 1}] - {title}")
+            resp = int(input("\n   Qual mangá deseja selecionar? ")) - 1
             return mangas_achados[resp]
         return None
 
@@ -57,13 +57,13 @@ class Manga:
                 if index == 0 or capitulos_listados[index]['Volume'] != capitulos_listados[index - 1]['Volume']:
                     volume = cap_vol['Volume'] if cap_vol['Volume'] is not None else "Nenhum"
                     print(f"=========================== Volume {volume} ===========================")    
-                print(f"({index + 1}) - Capitulo {cap_vol['Num_Capitulo']} - {cap_vol['Titulo']}")
+                print(f"   ({index + 1}) - Capitulo {cap_vol['Num_Capitulo']} - {cap_vol['Titulo']}")
 
             #* Ajustar para poder escolher os capitulos para baixar
 
-            print(f"    \n{len(capitulos_listados)} Capitulos encontrados\n")
+            print(f"   \n{len(capitulos_listados)} Capitulos encontrados\n")
 
-            escolha_cap = input("Quais capitulos deseja baixar? ")
+            escolha_cap = input("   Quais capitulos deseja baixar? ")
             print("\n")
             
             if "-" in escolha_cap:
@@ -79,11 +79,11 @@ class Manga:
             elif escolha_cap == "todos":
                 metodo_capitulos.baixar_capitulos(capitulos_listados, listar_covers, manga_id, nome_manga, 0, len(capitulos_listados) - 1)
             elif escolha_cap == "nenhum":
-                print("    Nenhum capitulo será baixado")
+                print("   Nenhum capitulo será baixado")
             else:
-                print("    Opção não existente")
+                print("   Opção não existente")
         else:
-            print("    Mangá não encontrado")
+            print("   Mangá não encontrado")
             
     def status_manga(self, nome_manga):
         manga_selecionado = self.listar_mangas(nome_manga)

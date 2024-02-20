@@ -29,7 +29,7 @@ class Cover:
 
     def baixar_cover(self, covers, volume, manga_id, nome_manga):
         if volume.isnumeric():
-            folder_volume = f"/mnt/76C08D67C08D2E85/Mangás/{nome_manga}/Volume {volume}"
+            folder_volume = f"{config.PATH_DOWNLOAD}/{nome_manga}/Volume {volume}"
             
             cover_vol = covers[int(volume) - 1]
             cover_file = cover_vol['attributes']['fileName']

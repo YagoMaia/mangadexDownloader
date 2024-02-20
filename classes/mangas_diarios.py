@@ -3,10 +3,12 @@ import os
 import utils.config as config
 from classes.manga import Manga
 from classes.capitulos import Capitulos
+from classes.redis import Redis
 # * Mangas no Json Mangas Diários
 
 metodos_mangas = Manga()
 metodo_capitulos = Capitulos()
+metodos_redis = Redis()
 class MangasDiarios:
 
     def atualizar_json(self, mangas_json):
@@ -14,31 +16,29 @@ class MangasDiarios:
             json.dump(mangas_json, ponteiro_json)
 
     def json_mangas_diarios(self):
-        if os.path.exists(f"{config.PATH_JSON}/mangas_diarios.json"):
-            with open(f"{config.PATH_JSON}/mangas_diarios.json", "r") as mangas_diarios:
-                data = json.load(mangas_diarios)
-        else:
-            data = {"Atuais": []}
-            with open(f"{config.PATH_JSON}/mangas_diarios.json", "w+") as mangas_diarios:
-                json.dump(data, mangas_diarios)
-        return data
+        
+        if metodos_redis.existsKey():
+            return metodos_redis.getJson()
+        metodos_redis.setJson({"Atuais":[]})
+        return metodos_redis.getJson()
 
     def atualizar_leituras(self):
         mangas_atuais = self.json_mangas_diarios()
         for manga in mangas_atuais['Atuais']:
-            print(f"\n  Verificando Mangá: {manga['Titulo']}")
+            print(f"\n   Verificando Mangá: {manga['Titulo']}")
             dados = metodos_mangas.pegar_dados_manga(manga['Id'])
             ultima_cap_add = dados["data"]['attributes']['latestUploadedChapter']
             if ultima_cap_add != manga['Ultimo_Cap']:
-                print("\n   Capitulo novo a ser lido")
+                print("   Capitulo novo a ser lido")
                 novo_cap_a_ser_lido = metodo_capitulos.listar_ultimo_capitulo(manga['Id'])
                 n_capitulo = novo_cap_a_ser_lido['attributes']["chapter"]
                 titulo_capitulo = novo_cap_a_ser_lido['attributes']['title']
                 print(f"   Capitulo: {n_capitulo} - {titulo_capitulo}")
+                print(f"   Cod Antigo: {manga['Ultimo_Cap']} - Cod Novo: {ultima_cap_add}")
                 manga['Ultimo_Cap'] = ultima_cap_add
             else:
-                print("\n  Nenhum capitulo novo adicionado")
-        self.atualizar_json(mangas_atuais)
+                print("   Nenhum capitulo novo adicionado")
+        metodos_redis.setJson(mangas_atuais)
 
     def adicionar_manga_diario(self, nome_manga):
 
@@ -56,19 +56,17 @@ class MangasDiarios:
                     repetido = True
             if repetido == False:
                 mangas_atuais['Atuais'].append(novo_manga)
-                with open(f"{config.PATH_JSON}/mangas_diarios.json", "w") as ponteiro_json:
-                    json.dump(mangas_atuais, ponteiro_json)
+                metodos_redis.setJson(mangas_atuais)
                 print(
-                    f"\n    Mangá {novo_manga['Titulo']} adicionado na lista de mangás Atuais")
+                    f"\n   {novo_manga['Titulo']} adicionado na lista de mangás Atuais")
             else:
-                print("\n    Mangá repetido")
+                print("\n   Mangá repetido")
 
     def remover_manga_diario(self, indice: int):
 
         mangas_atuais = self.json_mangas_diarios()
         mangas_atuais['Atuais'].pop(indice)
-        with open(f"{config.PATH_JSON}/mangas_diarios.json", "w") as ponteiro_json:
-            json.dump(mangas_atuais, ponteiro_json)
+        metodos_redis.setJson(mangas_atuais)
         print("\n   Mangá removido")
 
     def listar_mangas_diarios(self):

@@ -1,5 +1,4 @@
 from requests import Session
-import requests
 import utils.config as config
 import os
 import alive_progress 
@@ -59,7 +58,7 @@ class Capitulos:
             if vol_chap == None:
                 vol_chap = "Nenhum"
             
-            folder_path = f"/mnt/76C08D67C08D2E85/Mangás/{nome_manga}/Volume {vol_chap}/Capitulo {num_chap}"
+            folder_path = f"{config.PATH_DOWNLOAD}/{nome_manga}/Volume {vol_chap}/Capitulo {num_chap}"
             if not os.path.exists(folder_path):
                 chap = self.buscar_dados_capitulo(chap_id)
 

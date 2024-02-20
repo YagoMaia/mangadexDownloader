@@ -1,3 +1,4 @@
+#mangadex
 Programa voltada para baixar mangás do Mangadex via Api
 
 ## Funcionalidades

@@ -22,9 +22,9 @@ Assim que transformar o programa em um executavel, usando o autopytoexe e adicio
 mangadex "Nome do Mangá"
 
 após a listagem dos capitulos, escolher o que baixar:
-Capítulos:
+- Capítulos:
 10-30 -> Baixará os capitulos 10 ao 30
 todos -> Baixará todos os capitulos da listagem
-Volumes:
+- Volumes:
 volume 1,4,5,10 -> Baixará os volumes 1,4,5,10
 

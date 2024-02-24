@@ -26,8 +26,8 @@ class MangasDiarios:
         mangas_atuais = self.json_mangas_diarios()
         for manga in mangas_atuais['Atuais']:
             print(f"\n   Verificando Mangá: {manga['Titulo']}")
-            dados = metodos_mangas.pegar_dados_manga(manga['Id'])
-            ultima_cap_add = dados["data"]['attributes']['latestUploadedChapter']
+            dados_ultimo_cap = metodo_capitulos.listar_ultimo_capitulo(manga['Id'])
+            ultima_cap_add = dados_ultimo_cap['attributes']['chapter']
             if ultima_cap_add != manga['Ultimo_Cap']:
                 print("   Capitulo novo a ser lido")
                 novo_cap_a_ser_lido = metodo_capitulos.listar_ultimo_capitulo(manga['Id'])
@@ -46,8 +46,10 @@ class MangasDiarios:
         if manga_selecionado is not None:
             manga_id = manga_selecionado['id']
             nome_manga = manga_selecionado["attributes"]['title']['en']
-            ultima_cap_add = manga_selecionado['attributes']['latestUploadedChapter']
-            novo_manga = {'Titulo': nome_manga,'Id': manga_id, 'Ultimo_Cap': ultima_cap_add}
+            # ultima_cap_add = manga_selecionado['attributes']['latestUploadedChapter']
+            dados_ultima_cap_add = metodo_capitulos.listar_ultimo_capitulo(manga_id)
+            ultimo_cap = dados_ultima_cap_add['attributes']['chapter']
+            novo_manga = {'Titulo': nome_manga,'Id': manga_id, 'Ultimo_Cap': ultimo_cap}
             repetido = False
 
             mangas_atuais = self.json_mangas_diarios()

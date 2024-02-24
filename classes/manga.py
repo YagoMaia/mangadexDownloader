@@ -17,7 +17,7 @@ class Manga:
         self.session_manga = Session()
     
     def listar_mangas(self, titulo_manga):
-        print("\n    Iniciando conexão com MangaDex\n")
+        print("\n   Iniciando conexão com MangaDex\n")
         r = self.session_manga.get(f"{config.BASE_URL}/manga", params={"title": titulo_manga})
         mangas_achados = [manga for manga in r.json()["data"]]
         if len(mangas_achados) != 0:

@@ -16,9 +16,15 @@ class Manga:
     def __init__(self):
         self.session_manga = Session()
     
-    def listar_mangas(self, titulo_manga):
+    def listar_mangas(self, nome_manga:str) -> dict:
+        """
+        Função responsável por listar os mangás que contenham o nome passado.
+        
+        Parâmetros:
+            nome_manga : str -> Nome do mangá
+        """
         print("\n   Iniciando conexão com MangaDex\n")
-        r = self.session_manga.get(f"{config.BASE_URL}/manga", params={"title": titulo_manga})
+        r = self.session_manga.get(f"{config.BASE_URL}/manga", params={"title": nome_manga})
         mangas_achados = [manga for manga in r.json()["data"]]
         if len(mangas_achados) != 0:
             for index, m in enumerate(mangas_achados):
@@ -28,18 +34,30 @@ class Manga:
             return mangas_achados[resp]
         return None
 
-    def pegar_dados_manga(self, id_manga):
+    def pegar_dados_manga(self, id_manga: str) -> dict:
+        """
+        Função responsável por pegar os dados do mangá.
+        
+        Parâmetros:
+            id_manga : str -> Id do mangá
+        """
         r = self.session_manga.get(f"{config.BASE_URL}/manga/{id_manga}")
         return r.json()        
     
-    def baixar_manga(self, nome_manga):
+    def baixar_manga(self, nome_manga: str) -> None:
+        """
+        Função responsável por baixar os covers e os capitulos do mangá.
+        
+        Parâmetros:
+            nome_manga: str -> Nome do mangá
+        """
         manga_selecionado = self.listar_mangas(nome_manga)
         if manga_selecionado is not None:
         
             manga_id = manga_selecionado['id']
             nome_manga = manga_selecionado["attributes"]['title']['en'] 
 
-            lista_capitulos = metodo_capitulos.listar_capitulos(manga_id)
+            lista_capitulos = metodo_capitulos.listar_capitulos(manga_id, 'asc')
             listar_covers = metodo_cover.listar_covers(manga_id)
             
             capitulos = []
@@ -51,7 +69,7 @@ class Manga:
                 titulo_capitulo = cap['attributes']['title']
                 capitulos.append({'Num_Capitulo': n_capitulo, 'Id':id_capitulo, 'Titulo': titulo_capitulo, 'Volume':volume_capitulo})
 
-            capitulos_listados = metodo_capitulos.organizar_capitulos(capitulos)
+            capitulos_listados = metodo_capitulos.remover_capitulos_repetidos(capitulos)
 
             for index, cap_vol in enumerate(capitulos_listados):
                 if index == 0 or capitulos_listados[index]['Volume'] != capitulos_listados[index - 1]['Volume']:
@@ -85,7 +103,13 @@ class Manga:
         else:
             print("   Mangá não encontrado")
             
-    def status_manga(self, nome_manga):
+    def status_manga(self, nome_manga: str) -> None:
+        """
+        Função responsável por retornar os status do mangá passado.
+        
+        Parâmetros:
+            nome_manga : str -> Nome do mangá
+        """
         manga_selecionado = self.listar_mangas(nome_manga)
         if manga_selecionado is not None:
             nome_manga = manga_selecionado["attributes"]['title']['en'] 

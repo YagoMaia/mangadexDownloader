@@ -14,7 +14,13 @@ class Capitulos:
     def __init__(self):
         self.session_capitulos = Session()
     
-    def remover_capitulos_repetidos(self, capitulos:list):
+    def remover_capitulos_repetidos(self, capitulos: list) -> list:
+        """
+        Função responsável por remover os capitulos repetidos da lista.
+        
+        Parâmetros:
+            capitulos: List -> lista dos capitulso
+        """
         capitulos_vistos = set()
         capitulos_para_remover = []
 
@@ -30,25 +36,55 @@ class Capitulos:
         
         return capitulos
 
-    def buscar_dados_capitulo(self, id_capitulo):
+    def buscar_dados_capitulo(self, id_capitulo: str) -> dict:
+        """
+        Função responsável por retornar os dados do capitulos.
+        
+        Parâmetros:
+            id_capitulo: str -> id do capitulo
+        """
         chap = self.session_capitulos.get(f"{config.BASE_URL}/at-home/server/{id_capitulo}")
         return chap.json()
 
-    def listar_capitulos(self, manga_id):
-        r1 = self.session_capitulos.get(f"{config.BASE_URL}/manga/{manga_id}/feed", params={"translatedLanguage[]": languages, 'limit':500, 'order[chapter]':'asc'})
-        if r1.json()['total'] > 500:
-            print("    Mais de 500 capitulos encontrados")
-        return r1.json()['data']
+    def listar_capitulos(self, id_manga: str, order:str = 'asc') -> dict:
+        """
+        Função responsável por retornar a lista de capitulos existentes do mangá.
+        
+        Parâmetros:
+            id_manga: str -> id do mangá selecionado
+        """
+        r1 = self.session_capitulos.get(f"{config.BASE_URL}/manga/{id_manga}/feed", params={"translatedLanguage[]": languages, 'limit':500, 'order[chapter]': order})
+        total_cap = r1.json()['total']
+        capitulos = r1.json()['data']
+        cap_listados = 500
+        while(cap_listados < total_cap):
+            r2 = self.session_capitulos.get(f"{config.BASE_URL}/manga/{id_manga}/feed", params={"translatedLanguage[]": languages, 'limit':500, 'offset': cap_listados, 'order[chapter]': order})
+            capitulos.extend(r2.json()['data'])
+            cap_listados += 500
+        return capitulos
     
-    def listar_ultimo_capitulo(self, manga_id):
-        r2 = self.session_capitulos.get(f"{config.BASE_URL}/manga/{manga_id}/feed", params={"translatedLanguage[]": languages, 'limit': 1, 'order[chapter]':'desc'})
+    def listar_ultimo_capitulo(self, id_manga: str) -> dict:
+        """
+        Função responsável por retornar os dados do ultimo capitulo publicado.
+        
+        Parâmetros:
+            id_manga: str -> id do mangá selecionado
+        """
+        r2 = self.session_capitulos.get(f"{config.BASE_URL}/manga/{id_manga}/feed", params={"translatedLanguage[]": languages, 'limit': 1, 'order[chapter]':'desc'})
         return r2.json()['data'][0]
     
-    def organizar_capitulos(self, lista_capitulos):
-        capitulos_sem_repeticao = self.remover_capitulos_repetidos(lista_capitulos)
-        return capitulos_sem_repeticao
-    
-    def baixar_capitulos(self, capitulos, covers, manga_id, nome_manga, inicio, fim):
+    def baixar_capitulos(self, capitulos: list, covers: list, id_manga: str, nome_manga: str, inicio: int, fim: int) -> None:
+        """
+        Função responsável por baixar os capitulos.
+        
+        Parâmetros:
+            capitulos: List -> lista dos capitulos
+            covers: List -> lista dos covers
+            id_manga: str -> id do mangá
+            nome_manga: str -> Nome do mangá
+            inicio : int -> Capitulo inicial
+            fim: int -> Captitulo final
+        """
         
         for i in range(inicio, fim + 1):
             chap_id = capitulos[i]['Id']
@@ -69,7 +105,7 @@ class Capitulos:
                 data_saver = chap["chapter"]["dataSaver"]
                 data = chap["chapter"]["data"]
                 
-                metodo_cover.baixar_cover(covers, vol_chap, manga_id, nome_manga)
+                metodo_cover.baixar_cover(covers, vol_chap, id_manga, nome_manga)
                 
                 with alive_progress.alive_bar(len(data_saver) - 1, title = f"Capitulo {num_chap} - Vol {vol_chap}") as bar:
                     for index, page in enumerate(data_saver):

@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "mangadex.py",
             "console": "integratedTerminal",
-            "args": ["One Piece", "Jujutsu Kaisen, Black Clover, Blue Lock, Sakamoto Days, Ao no Exorcist, Kaiju No. 8, My hero Academia, Record of Ragnarok, One Piece, Tougen Anki"]
+            "args": ["The Promised"]
         }
     ]
 }

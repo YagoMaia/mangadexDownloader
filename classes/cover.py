@@ -8,6 +8,10 @@ languages =['pt-br']
 
 @Singleton
 class Cover:
+    """
+    Classe responsável pelos métodos de baixar covers
+    """
+    
     def __init__(self):
         self.session_cover = Session()
     
@@ -44,15 +48,15 @@ class Cover:
             nome_manga : str -> Nome do mangá
         """
         if volume.isnumeric():
-            folder_volume = f"{config.PATH_DOWNLOAD}/{nome_manga}/Volume {volume}"
+            folder_volume = f"{config.PATH_DOWNLOAD}/{nome_manga}/Volume {int(volume):03d}"
             
             cover_vol = covers[int(volume) - 1]
             cover_file = cover_vol['attributes']['fileName']
             
-            if not os.path.exists(f"{folder_volume}/Capa Volume {volume}.png"):
+            if not os.path.exists(f"{folder_volume}/Capa Volume {volume}.jpg"):
                 with alive_progress.alive_bar(1, title = f"Capa Volume {volume}") as bar:
                     r = self.session_cover.get(f"{config.PATH_COVER}/{id_manga}/{cover_file}")
-                    with open(f"{folder_volume}/Capa Volume {volume}.png", mode="wb") as f:
+                    with open(f"{folder_volume}/Capa Volume {volume}.jpg", mode="wb") as f:
                         f.write(r.content)
                     bar()
                     

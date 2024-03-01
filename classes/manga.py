@@ -11,7 +11,10 @@ metodo_capitulos = Capitulos()
 metodo_cover = Cover()
 
 @Singleton
-class Manga:
+class Manga():
+    """
+    Classe responsável pelos métodos de baixar mangás
+    """
     
     def __init__(self):
         self.session_manga = Session()
@@ -30,8 +33,10 @@ class Manga:
             for index, m in enumerate(mangas_achados):
                 title = m["attributes"]['title']['en']
                 print(f"   [{index + 1}] - {title}")
-            resp = int(input("\n   Qual mangá deseja selecionar? ")) - 1
-            return mangas_achados[resp]
+            resp = input("\n   Qual mangá deseja selecionar? ")
+            if resp == 'nenhum':
+                return None
+            return mangas_achados[int(resp) - 1]
         return None
 
     def pegar_dados_manga(self, id_manga: str) -> dict:
@@ -79,7 +84,7 @@ class Manga:
 
             #* Ajustar para poder escolher os capitulos para baixar
 
-            print(f"   \n{len(capitulos_listados)} Capitulos encontrados\n")
+            print(f"\n   {len(capitulos_listados)} Capitulos encontrados\n")
 
             escolha_cap = input("   Quais capitulos deseja baixar? ")
             print("\n")

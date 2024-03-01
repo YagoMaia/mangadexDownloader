@@ -11,6 +11,10 @@ languages =['pt-br']
 
 @Singleton
 class Capitulos:
+    """
+    Classe responsável pelos métodos de baixar capitulos
+    """
+    
     def __init__(self):
         self.session_capitulos = Session()
     
@@ -93,8 +97,9 @@ class Capitulos:
             
             if vol_chap == None:
                 vol_chap = "Nenhum"
-            
-            folder_path = f"{config.PATH_DOWNLOAD}/{nome_manga}/Volume {vol_chap}/Capitulo {num_chap}"
+            folder_path = f"{config.PATH_DOWNLOAD}/{nome_manga}/Volume {vol_chap}/Capitulo #{num_chap} - {nome_manga}"
+            if vol_chap.isnumeric():
+                folder_path = f"{config.PATH_DOWNLOAD}/{nome_manga}/Volume {int(vol_chap):03d}/Capitulo #{num_chap}- {nome_manga}"
             if not os.path.exists(folder_path):
                 chap = self.buscar_dados_capitulo(chap_id)
 
@@ -111,11 +116,11 @@ class Capitulos:
                     for index, page in enumerate(data_saver):
                         if index in (0, len(data_saver)):
                             continue
-                        if not os.path.exists(f"{folder_path}/Page {index}.png"):
+                        if not os.path.exists(f"{folder_path}/Page {index:02d}.jpg"):
                             r = self.session_capitulos.get(f"{host}/data-saver/{chapter_hash}/{page}")
                             if r.status_code == 404:
                                 page = data[index]
                                 r = self.session_capitulos.get(f"{host}/data/{chapter_hash}/{page}")
-                            with open(f"{folder_path}/Page {index}.png", mode="wb") as f:
+                            with open(f"{folder_path}/Page {index:02d}.jpg", mode="wb") as f:
                                 f.write(r.content)
                         bar()

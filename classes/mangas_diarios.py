@@ -95,4 +95,4 @@ class MangasDiarios:
         mangas_atuais = self.json_mangas_diarios()
         print("\n   Mangas na lista de atuais\n")
         for index, m in enumerate(mangas_atuais['Atuais']):
-            print(f"{index+1} - {m['Titulo']}")
+            print(f"   {index+1} - {m['Titulo']}")

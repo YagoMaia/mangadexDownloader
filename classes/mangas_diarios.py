@@ -35,9 +35,9 @@ class MangasDiarios:
                 n_capitulo = novo_cap_a_ser_lido["attributes"]["chapter"]
                 titulo_capitulo = novo_cap_a_ser_lido["attributes"]["title"]
                 print(f"   Capitulo: {n_capitulo} - {titulo_capitulo}")
-                print(
-                    f"   Cod Antigo: {manga['Ultimo_Cap']} - Cod Novo: {ultima_cap_add}"
-                )
+                # print(
+                #     f"   Cod Antigo: {manga['Ultimo_Cap']} - Cod Novo: {ultima_cap_add}"
+                # )
                 manga["Ultimo_Cap"] = ultima_cap_add
             else:
                 print("   Nenhum capitulo novo adicionado")

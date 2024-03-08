@@ -48,9 +48,7 @@ class Capitulos:
         Parâmetros:
             id_capitulo: str -> id do capitulo
         """
-        chap = self.session_capitulos.get(
-            f"{config.BASE_URL}/at-home/server/{id_capitulo}"
-        )
+        chap = self.session_capitulos.get(f"{config.BASE_URL}/at-home/server/{id_capitulo}")
         return chap.json()
 
     def listar_capitulos(self, id_manga: str, order: str = "asc") -> dict:
@@ -102,15 +100,7 @@ class Capitulos:
         )
         return r2.json()["data"][0]
 
-    def baixar_capitulos(
-        self,
-        capitulos: list,
-        covers: list,
-        id_manga: str,
-        nome_manga: str,
-        inicio: int,
-        fim: int,
-    ) -> None:
+    def baixar_capitulos( self, capitulos: list, covers: list, id_manga: str, nome_manga: str, inicio: int, fim: int) -> None:
         """
         Função responsável por baixar os capitulos.
 
@@ -145,23 +135,15 @@ class Capitulos:
 
                 metodo_cover.baixar_cover(covers, vol_chap, id_manga, nome_manga)
 
-                with alive_progress.alive_bar(
-                    len(data_saver) - 1, title=f"Capitulo {num_chap} - Vol {vol_chap}"
-                ) as bar:
+                with alive_progress.alive_bar(len(data_saver) - 1, title=f"Capitulo {num_chap} - Vol {vol_chap}") as bar:
                     for index, page in enumerate(data_saver):
                         if index in (0, len(data_saver)):
                             continue
                         if not os.path.exists(f"{folder_path}/Page {index:02d}.jpg"):
-                            r = self.session_capitulos.get(
-                                f"{host}/data-saver/{chapter_hash}/{page}"
-                            )
+                            r = self.session_capitulos.get(f"{host}/data-saver/{chapter_hash}/{page}")
                             if r.status_code == 404:
                                 page = data[index]
-                                r = self.session_capitulos.get(
-                                    f"{host}/data/{chapter_hash}/{page}"
-                                )
-                            with open(
-                                f"{folder_path}/Page {index:02d}.jpg", mode="wb"
-                            ) as f:
+                                r = self.session_capitulos.get(f"{host}/data/{chapter_hash}/{page}")
+                            with open(f"{folder_path}/Page {index:02d}.jpg", mode="wb") as f:
                                 f.write(r.content)
                         bar()

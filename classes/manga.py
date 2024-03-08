@@ -28,9 +28,7 @@ class Manga:
             nome_manga : str -> Nome do mangá
         """
         print("\n   Iniciando conexão com MangaDex\n")
-        r = self.session_manga.get(
-            f"{config.BASE_URL}/manga", params={"title": nome_manga}
-        )
+        r = self.session_manga.get(f"{config.BASE_URL}/manga", params={"title": nome_manga})
         mangas_achados = [manga for manga in r.json()["data"]]
         if len(mangas_achados) != 0:
             for index, m in enumerate(mangas_achados):
@@ -91,15 +89,9 @@ class Manga:
                     or capitulos_listados[index]["Volume"]
                     != capitulos_listados[index - 1]["Volume"]
                 ):
-                    volume = (
-                        cap_vol["Volume"] if cap_vol["Volume"] is not None else "Nenhum"
-                    )
-                    print(
-                        f"=========================== Volume {volume} ==========================="
-                    )
-                print(
-                    f"   ({index + 1}) - Capitulo {cap_vol['Num_Capitulo']} - {cap_vol['Titulo']}"
-                )
+                    volume = (cap_vol["Volume"] if cap_vol["Volume"] is not None else "Nenhum")
+                    print(f"=========================== Volume {volume} ===========================")
+                print(f"   ({index + 1}) - Capitulo {cap_vol['Num_Capitulo']} - {cap_vol['Titulo']}")
 
             # * Ajustar para poder escolher os capitulos para baixar
 
@@ -110,46 +102,16 @@ class Manga:
 
             if "-" in escolha_cap:
                 cap_ini, cap_fim = escolha_cap.split("-")
-                metodo_capitulos.baixar_capitulos(
-                    capitulos_listados,
-                    listar_covers,
-                    manga_id,
-                    nome_manga,
-                    int(cap_ini) - 1,
-                    int(cap_fim) - 1,
-                )
+                metodo_capitulos.baixar_capitulos( capitulos_listados, listar_covers, manga_id, nome_manga, int(cap_ini) - 1, int(cap_fim) - 1)
             elif "volume" in escolha_cap:
                 volumes_escolhidos = escolha_cap.split()[1]
                 for volume in volumes_escolhidos.split(","):
-                    capitulos_volume = [
-                        cap for cap in capitulos_listados if cap["Volume"] == volume
-                    ]
-                    metodo_capitulos.baixar_capitulos(
-                        capitulos_volume,
-                        listar_covers,
-                        manga_id,
-                        nome_manga,
-                        0,
-                        len(capitulos_volume) - 1,
-                    )
+                    capitulos_volume = [cap for cap in capitulos_listados if cap["Volume"] == volume]
+                    metodo_capitulos.baixar_capitulos( capitulos_volume, listar_covers, manga_id, nome_manga, 0, len(capitulos_volume) - 1)
             elif escolha_cap.isnumeric():
-                metodo_capitulos.baixar_capitulos(
-                    capitulos_listados,
-                    listar_covers,
-                    manga_id,
-                    nome_manga,
-                    int(escolha_cap) - 1,
-                    int(escolha_cap) - 1,
-                )
+                metodo_capitulos.baixar_capitulos( capitulos_listados, listar_covers, manga_id, nome_manga, int(escolha_cap) - 1, int(escolha_cap) - 1)
             elif escolha_cap == "todos":
-                metodo_capitulos.baixar_capitulos(
-                    capitulos_listados,
-                    listar_covers,
-                    manga_id,
-                    nome_manga,
-                    0,
-                    len(capitulos_listados) - 1,
-                )
+                metodo_capitulos.baixar_capitulos( capitulos_listados, listar_covers, manga_id, nome_manga, 0, len(capitulos_listados) - 1)
             elif escolha_cap == "nenhum":
                 print("   Nenhum capitulo será baixado")
             else:
@@ -170,7 +132,7 @@ class Manga:
             descricao = manga_selecionado["attributes"]["description"]["pt-br"]
             ano_manga = manga_selecionado["attributes"]["year"]
             status = manga_selecionado["attributes"]["status"]
-            print(formatação_texto.generate_ascii_art(nome_manga))
+            formatação_texto.generate_ascii_art(nome_manga)
             print(f"Status: {status}")
             print(f"Ano Publicação: {ano_manga}")
             print(f"Descrição: {descricao}")

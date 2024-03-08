@@ -38,9 +38,7 @@ class Cover:
 
         return covers
 
-    def baixar_cover(
-        self, covers: list, volume: str, id_manga: str, nome_manga: str
-    ) -> None:
+    def baixar_cover(self, covers: list, volume: str, id_manga: str, nome_manga: str) -> None:
         """
         Função responsável por baixar o cover.
 
@@ -51,21 +49,15 @@ class Cover:
             nome_manga : str -> Nome do mangá
         """
         if volume.isnumeric():
-            folder_volume = (
-                f"{config.PATH_DOWNLOAD}/{nome_manga}/Volume {int(volume):03d}"
-            )
+            folder_volume = (f"{config.PATH_DOWNLOAD}/{nome_manga}/Volume {int(volume):03d}")
 
             cover_vol = covers[int(volume) - 1]
             cover_file = cover_vol["attributes"]["fileName"]
 
             if not os.path.exists(f"{folder_volume}/Capa Volume {volume}.jpg"):
                 with alive_progress.alive_bar(1, title=f"Capa Volume {volume}") as bar:
-                    r = self.session_cover.get(
-                        f"{config.PATH_COVER}/{id_manga}/{cover_file}"
-                    )
-                    with open(
-                        f"{folder_volume}/Capa Volume {volume}.jpg", mode="wb"
-                    ) as f:
+                    r = self.session_cover.get(f"{config.PATH_COVER}/{id_manga}/{cover_file}")
+                    with open(f"{folder_volume}/Capa Volume {volume}.jpg", mode="wb") as f:
                         f.write(r.content)
                     bar()
 

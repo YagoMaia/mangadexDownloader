@@ -8,7 +8,7 @@ title = sys.argv[1]
 leituras_atuais = MangasDiarios()
 download_manga = Manga()
 
-print(generate_ascii_art("   MangaDex"))
+generate_ascii_art("   MangaDex")
 
 match title:
     case "diario":

@@ -9,13 +9,6 @@ metodos_redis = Redis()
 
 
 class MangasDiarios:
-    # def atualizar_json(self, mangas_json: dict) -> None:
-    #     """
-    #     Função responsável por
-    #     """
-    #     with open(f"{config.PATH_JSON}/mangas_diarios.json", "w") as ponteiro_json:
-    #         json.dump(mangas_json, ponteiro_json)
-
     def json_mangas_diarios(self) -> dict:
         """
         Função responsável por retornar o Json que está no Redis com os mangás atuais.

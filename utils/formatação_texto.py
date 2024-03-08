@@ -9,4 +9,4 @@ def generate_ascii_art(texto: str) -> str:
         texto : str -> Texto que será fetio a ascii art
     """
     ascii_art = pyfiglet.figlet_format(texto)
-    return ascii_art
+    print(ascii_art)

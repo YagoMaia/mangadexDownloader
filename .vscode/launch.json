@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "mangadex.py",
             "console": "integratedTerminal",
-            "args": ["The Promised"]
+            "args": ["Jujutsu"]
         }
     ]
 }

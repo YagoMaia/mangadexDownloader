@@ -24,23 +24,16 @@ class MangasDiarios:
         """
         mangas_atuais = self.json_mangas_diarios()
         for manga in mangas_atuais["Atuais"]:
-            print(f"\n   Verificando Mangá: {manga['Titulo']}")
             dados_ultimo_cap = metodo_capitulos.listar_ultimo_capitulo(manga["Id"])
             ultima_cap_add = dados_ultimo_cap["attributes"]["chapter"]
             if ultima_cap_add != manga["Ultimo_Cap"]:
+                print(f"\n   Verificando Mangá: {manga['Titulo']}")
                 print("   Capitulo novo a ser lido")
-                novo_cap_a_ser_lido = metodo_capitulos.listar_ultimo_capitulo(
-                    manga["Id"]
-                )
+                novo_cap_a_ser_lido = metodo_capitulos.listar_ultimo_capitulo(manga["Id"])
                 n_capitulo = novo_cap_a_ser_lido["attributes"]["chapter"]
                 titulo_capitulo = novo_cap_a_ser_lido["attributes"]["title"]
                 print(f"   Capitulo: {n_capitulo} - {titulo_capitulo}")
-                # print(
-                #     f"   Cod Antigo: {manga['Ultimo_Cap']} - Cod Novo: {ultima_cap_add}"
-                # )
                 manga["Ultimo_Cap"] = ultima_cap_add
-            else:
-                print("   Nenhum capitulo novo adicionado")
         metodos_redis.setJson(mangas_atuais)
 
     def adicionar_manga_diario(self, nome_manga: str) -> None:

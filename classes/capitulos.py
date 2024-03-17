@@ -4,6 +4,7 @@ import os
 import alive_progress
 from classes.cover import Cover
 from classes.singleton import Singleton
+from utils.notification import notification
 
 metodo_cover = Cover()
 
@@ -122,7 +123,7 @@ class Capitulos:
                 vol_chap = "Nenhum"
             folder_path = f"{config.PATH_DOWNLOAD}/{nome_manga}/Volume {vol_chap}/Capitulo #{num_chap} - {nome_manga}"
             if vol_chap.isnumeric():
-                folder_path = f"{config.PATH_DOWNLOAD}/{nome_manga}/Volume {int(vol_chap):03d}/Capitulo #{num_chap}- {nome_manga}"
+                folder_path = f"{config.PATH_DOWNLOAD}/{nome_manga}/Volume {int(vol_chap):03d}/Capitulo #{num_chap} - {nome_manga}"
             if not os.path.exists(folder_path):
                 chap = self.buscar_dados_capitulo(chap_id)
 
@@ -147,3 +148,4 @@ class Capitulos:
                             with open(f"{folder_path}/Page {index:02d}.jpg", mode="wb") as f:
                                 f.write(r.content)
                         bar()
+        notification(nome_manga, "Capitulos Baixado com sucesso")

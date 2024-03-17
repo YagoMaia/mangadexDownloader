@@ -1,7 +1,7 @@
 from classes.manga import Manga
 from classes.capitulos import Capitulos
 from classes.redis import Redis
-# * Mangas no Json Mangas Diários
+from utils.notification import notification
 
 metodos_mangas = Manga()
 metodo_capitulos = Capitulos()
@@ -29,6 +29,7 @@ class MangasDiarios:
             if ultima_cap_add != manga["Ultimo_Cap"]:
                 print(f"\n   Verificando Mangá: {manga['Titulo']}")
                 print("   Capitulo novo a ser lido")
+                notification(f"{manga['Titulo']} - Capitulo Novo", f"Capitulo: {n_capitulo} - {titulo_capitulo}")
                 novo_cap_a_ser_lido = metodo_capitulos.listar_ultimo_capitulo(manga["Id"])
                 n_capitulo = novo_cap_a_ser_lido["attributes"]["chapter"]
                 titulo_capitulo = novo_cap_a_ser_lido["attributes"]["title"]

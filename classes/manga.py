@@ -51,6 +51,10 @@ class Manga:
         return r.json()
 
     def baixar_manga(self, nome_manga: str) -> None:
+        
+        #TODO verificar se o volume já não compactado, porque se tiver compactado não precisa baixar denovo
+        #TODO verificar compactação pra ver se tá tudo certo
+        
         """
         Função responsável por baixar os covers e os capitulos do mangá.
 

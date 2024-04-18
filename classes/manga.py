@@ -88,11 +88,7 @@ class Manga:
             capitulos_listados = metodo_capitulos.remover_capitulos_repetidos(capitulos)
 
             for index, cap_vol in enumerate(capitulos_listados):
-                if (
-                    index == 0
-                    or capitulos_listados[index]["Volume"]
-                    != capitulos_listados[index - 1]["Volume"]
-                ):
+                if (index == 0 or capitulos_listados[index]["Volume"] != capitulos_listados[index - 1]["Volume"]):
                     volume = (cap_vol["Volume"] if cap_vol["Volume"] is not None else "Nenhum")
                     print(f"=========================== Volume {volume} ===========================")
                 print(f"   ({index + 1}) - Capitulo {cap_vol['Num_Capitulo']} - {cap_vol['Titulo']}")
@@ -106,16 +102,16 @@ class Manga:
 
             if "-" in escolha_cap:
                 cap_ini, cap_fim = escolha_cap.split("-")
-                metodo_capitulos.baixar_capitulos( capitulos_listados, listar_covers, manga_id, nome_manga, int(cap_ini) - 1, int(cap_fim) - 1)
+                metodo_capitulos.baixar_capitulos(capitulos_listados, listar_covers, manga_id, nome_manga, int(cap_ini) - 1, int(cap_fim) - 1)
             elif "volume" in escolha_cap:
                 volumes_escolhidos = escolha_cap.split()[1]
                 for volume in volumes_escolhidos.split(","):
                     capitulos_volume = [cap for cap in capitulos_listados if cap["Volume"] == volume]
-                    metodo_capitulos.baixar_capitulos( capitulos_volume, listar_covers, manga_id, nome_manga, 0, len(capitulos_volume) - 1)
+                    metodo_capitulos.baixar_capitulos(capitulos_volume, listar_covers, manga_id, nome_manga, 0, len(capitulos_volume) - 1)
             elif escolha_cap.isnumeric():
-                metodo_capitulos.baixar_capitulos( capitulos_listados, listar_covers, manga_id, nome_manga, int(escolha_cap) - 1, int(escolha_cap) - 1)
+                metodo_capitulos.baixar_capitulos(capitulos_listados, listar_covers, manga_id, nome_manga, int(escolha_cap) - 1, int(escolha_cap) - 1)
             elif escolha_cap == "todos":
-                metodo_capitulos.baixar_capitulos( capitulos_listados, listar_covers, manga_id, nome_manga, 0, len(capitulos_listados) - 1)
+                metodo_capitulos.baixar_capitulos(capitulos_listados, listar_covers, manga_id, nome_manga, 0, len(capitulos_listados) - 1)
             elif escolha_cap == "nenhum":
                 print("   Nenhum capitulo será baixado")
             else:

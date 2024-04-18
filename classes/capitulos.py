@@ -1,10 +1,9 @@
 from requests import Session
 import utils.config as config
-import os
-import alive_progress
 from classes.cover import Cover
 from classes.singleton import Singleton
-from utils.notification import notification
+from utils import tarefas
+from celery import group
 
 metodo_cover = Cover()
 
@@ -101,7 +100,7 @@ class Capitulos:
         )
         return r2.json()["data"][0]
 
-    def baixar_capitulos( self, capitulos: list, covers: list, id_manga: str, nome_manga: str, inicio: int, fim: int) -> None:
+    def baixar_capitulos(self, capitulos: list, covers: list, id_manga: str, nome_manga: str, inicio: int, fim: int) -> None:
         """
         Função responsável por baixar os capitulos.
 
@@ -114,38 +113,13 @@ class Capitulos:
             fim: int -> Captitulo final
         """
 
+        lista_tarefas = []
+
         for i in range(inicio, fim + 1):
-            chap_id = capitulos[i]["Id"]
-            num_chap = capitulos[i]["Num_Capitulo"]
-            vol_chap = capitulos[i]["Volume"]
-
-            if vol_chap is None:
-                vol_chap = "Nenhum"
-            folder_path = f"{config.PATH_DOWNLOAD}/{nome_manga}/Volume {vol_chap}/Capitulo #{num_chap} - {nome_manga}"
-            if vol_chap.isnumeric():
-                folder_path = f"{config.PATH_DOWNLOAD}/{nome_manga}/Volume {int(vol_chap):03d}/Capitulo #{num_chap} - {nome_manga}"
-            if not os.path.exists(folder_path):
-                chap = self.buscar_dados_capitulo(chap_id)
-
-                os.makedirs(folder_path, exist_ok=True)
-
-                host = chap["baseUrl"]
-                chapter_hash = chap["chapter"]["hash"]
-                data_saver = chap["chapter"]["dataSaver"]
-                data = chap["chapter"]["data"]
-
-                metodo_cover.baixar_cover(covers, vol_chap, id_manga, nome_manga)
-
-                with alive_progress.alive_bar(len(data_saver) - 1, title=f"Capitulo {num_chap} - Vol {vol_chap}") as bar:
-                    for index, page in enumerate(data_saver):
-                        if index in (0, len(data_saver)):
-                            continue
-                        if not os.path.exists(f"{folder_path}/Page {index:02d}.jpg"):
-                            r = self.session_capitulos.get(f"{host}/data-saver/{chapter_hash}/{page}")
-                            if r.status_code == 404:
-                                page = data[index]
-                                r = self.session_capitulos.get(f"{host}/data/{chapter_hash}/{page}")
-                            with open(f"{folder_path}/Page {index:02d}.jpg", mode="wb") as f:
-                                f.write(r.content)
-                        bar()
-        notification(nome_manga, "Capitulos Baixado com sucesso")
+            lista_tarefas.append(tarefas.baixar_capitulos.s(capitulos[i], nome_manga))
+        
+        grupo_tarefas = group(lista_tarefas)
+        
+        grupo_tarefas.apply_async()
+        
+        tarefas.baixar_cover.apply_async(args=[covers, id_manga, nome_manga])

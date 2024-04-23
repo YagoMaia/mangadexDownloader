@@ -34,6 +34,7 @@ class MangasDiarios:
                 titulo_capitulo = novo_cap_a_ser_lido["attributes"]["title"]
                 notification(f"{manga['Titulo']} - Capitulo Novo", f"Capitulo: {n_capitulo} - {titulo_capitulo}")
                 print(f"   Capitulo: {n_capitulo} - {titulo_capitulo}")
+                print(f"   Link: https://mangadex.org/title/{manga['Id']}")
                 manga["Ultimo_Cap"] = ultima_cap_add
         metodos_redis.setJson(mangas_atuais)
 
@@ -64,9 +65,7 @@ class MangasDiarios:
             if not repetido:
                 mangas_atuais["Atuais"].append(novo_manga)
                 metodos_redis.setJson(mangas_atuais)
-                print(
-                    f"\n   {novo_manga['Titulo']} adicionado na lista de mangás Atuais"
-                )
+                print(f"\n   {novo_manga['Titulo']} adicionado na lista de mangás Atuais")
             else:
                 print("\n   Mangá repetido")
 

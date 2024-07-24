@@ -32,16 +32,18 @@ def baixar_cover(covers: list, id_manga: str, nome_manga: str) -> bool:
     lista_retornos = []
     folder_manga = f"{config.PATH_DOWNLOAD}/{nome_manga}"
     for folder in os.listdir(folder_manga):
-        volume = int(folder.split(" ")[1])
-        cover_vol = covers[volume - 1]
-        cover_file = cover_vol["attributes"]["fileName"]
-        folder_volume = f"{folder_manga}/{folder}"
-        if not os.path.exists(f"{folder_volume}/Capa Volume {volume}.jpg"):
-            r = requests.get(f"{config.PATH_COVER}/{id_manga}/{cover_file}")
-            with open(f"{folder_volume}/Capa Volume {volume}.jpg", mode="wb") as f:
-                f.write(r.content)
-                lista_retornos.append(True)
-        lista_retornos.append(False)
+        volume = folder.split(" ")[1]
+        if volume.isnumeric():
+            volume = int(volume)
+            cover_vol = covers[volume - 1]
+            cover_file = cover_vol["attributes"]["fileName"]
+            folder_volume = f"{folder_manga}/{folder}"
+            if not os.path.exists(f"{folder_volume}/Capa Volume {volume}.jpg"):
+                r = requests.get(f"{config.PATH_COVER}/{id_manga}/{cover_file}")
+                with open(f"{folder_volume}/Capa Volume {volume}.jpg", mode="wb") as f:
+                    f.write(r.content)
+                    lista_retornos.append(True)
+            lista_retornos.append(False)
     return lista_retornos
 
 @app.task(name = "baixar_capitulo")
@@ -59,7 +61,7 @@ def baixar_capitulos(capitulo: dict, nome_manga: str) -> bool:
     """
 
     chap_id = capitulo["Id"]
-    num_chap = capitulo["Num_Capitulo"]
+    num_chap = capitulo["Num_Capitulo"] if capitulo["Num_Capitulo"] is not None else 0
     vol_chap = capitulo["Volume"]
 
     if vol_chap is None:

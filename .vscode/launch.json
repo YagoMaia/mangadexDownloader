@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "mangadex.py",
             "console": "integratedTerminal",
-            "args": ["Century Boys"]
+            "args": [""]
         },
         {
             "name": "Python: Celery linux",

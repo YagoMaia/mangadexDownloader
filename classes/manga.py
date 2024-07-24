@@ -28,7 +28,7 @@ class Manga:
             nome_manga : str -> Nome do mangá
         """
         print("\n   Iniciando conexão com MangaDex\n")
-        r = self.session_manga.get(f"{config.BASE_URL}/manga", params={"title": nome_manga})
+        r = self.session_manga.get(f"{config.BASE_URL}/manga", params={"title": nome_manga, 'contentRating[]': config.contentRating})
         mangas_achados = [manga for manga in r.json()["data"]]
         if len(mangas_achados) != 0:
             for index, m in enumerate(mangas_achados):
@@ -98,7 +98,6 @@ class Manga:
             print(f"\n   {len(capitulos_listados)} Capitulos encontrados\n")
 
             escolha_cap = input("   Quais capitulos deseja baixar? ")
-            print("\n")
 
             if "-" in escolha_cap:
                 cap_ini, cap_fim = escolha_cap.split("-")

@@ -60,6 +60,7 @@ class Capitulos:
         r1 = self.session_capitulos.get(
             f"{config.BASE_URL}/manga/{id_manga}/feed",
             params={
+                'contentRating[]': config.contentRating,
                 "translatedLanguage[]": languages,
                 "limit": 500,
                 "order[chapter]": order,
@@ -92,7 +93,7 @@ class Capitulos:
         r2 = self.session_capitulos.get(
             f"{config.BASE_URL}/manga/{id_manga}/feed",
             params={
-                "translatedLanguage[]": languages,
+                "translatedLanguage[]": ['pt-br'],
                 "limit": 1,
                 "order[chapter]": "desc",
             },

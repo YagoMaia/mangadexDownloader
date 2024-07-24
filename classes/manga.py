@@ -5,7 +5,7 @@ from classes.cover import Cover
 from utils import formatação_texto
 from classes.singleton import Singleton
 
-languages = ["pt-br"]
+languages = config.languages
 
 metodo_capitulos = Capitulos()
 metodo_cover = Cover()

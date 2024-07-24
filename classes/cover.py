@@ -4,8 +4,7 @@ import os
 import alive_progress
 from classes.singleton import Singleton
 
-languages = ["pt-br"]
-
+languages = config.languages
 
 @Singleton
 class Cover:
@@ -70,7 +69,7 @@ class Cover:
         """
         covers = self.session_cover.get(
             f"{config.BASE_URL}/cover",
-            params={"manga[]": id_manga, "limit": 100, "order[volume]": "asc"},
+            params={"manga[]": id_manga, "limit": 100, "order[volume]": "asc", "locales[]":['en']},
         )
         covers_sem_repeticao = self.remover_covers_repetidos(covers.json()["data"])
         return covers_sem_repeticao

@@ -7,8 +7,7 @@ from celery import group
 
 metodo_cover = Cover()
 
-languages = ["pt-br"]
-
+languages = config.languages
 
 @Singleton
 class Capitulos:

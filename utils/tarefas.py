@@ -29,18 +29,20 @@ def baixar_cover(covers: list, id_manga: str, nome_manga: str) -> bool:
         id_manga : str -> Id do mangá
         nome_manga : str -> Nome do mangá
     """
+    lista_retornos = []
     folder_manga = f"{config.PATH_DOWNLOAD}/{nome_manga}"
-    for volume, folder in enumerate(os.listdir(folder_manga)):
-        cover_vol = covers[volume]
+    for folder in os.listdir(folder_manga):
+        volume = int(folder.split(" ")[1])
+        cover_vol = covers[volume - 1]
         cover_file = cover_vol["attributes"]["fileName"]
         folder_volume = f"{folder_manga}/{folder}"
-        if not os.path.exists(f"{folder_volume}/Capa Volume {volume+1}.jpg"):
-            #os.makedirs(folder_volume, exist_ok=True)
+        if not os.path.exists(f"{folder_volume}/Capa Volume {volume}.jpg"):
             r = requests.get(f"{config.PATH_COVER}/{id_manga}/{cover_file}")
-            with open(f"{folder_volume}/Capa Volume {volume+1}.jpg", mode="wb") as f:
+            with open(f"{folder_volume}/Capa Volume {volume}.jpg", mode="wb") as f:
                 f.write(r.content)
-        return True
-    return False
+                lista_retornos.append(True)
+        lista_retornos.append(False)
+    return lista_retornos
 
 @app.task(name = "baixar_capitulo")
 def baixar_capitulos(capitulo: dict, nome_manga: str) -> bool:
@@ -78,12 +80,12 @@ def baixar_capitulos(capitulo: dict, nome_manga: str) -> bool:
         for index, page in enumerate(data_saver):
             if index in (0, len(data_saver)):
                 continue
-            if not os.path.exists(f"{folder_path}/Page {index:02d}.jpg"):
+            if not os.path.exists(f"{folder_path}/Cap_{int(num_chap):04d}-Page {index:02d}.jpg"):
                 r = requests.get(f"{host}/data-saver/{chapter_hash}/{page}")
                 if r.status_code == 404:
                     page = data[index]
                     r = requests.get(f"{host}/data/{chapter_hash}/{page}")
-                with open(f"{folder_path}/Page {index:02d}.jpg", mode="wb") as f:
+                with open(f"{folder_path}/Cap_{int(num_chap):04d}-Page {index:02d}.jpg", mode="wb") as f:
                     f.write(r.content)
     #notification(nome_manga, "Capitulos Baixado com sucesso")
     return True

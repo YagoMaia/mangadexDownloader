@@ -5,12 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python Debugger: Current File with Arguments",
+            "name": "Mangadex",
             "type": "debugpy",
             "request": "launch",
             "program": "mangadex.py",
             "console": "integratedTerminal",
-            "args": ["Jujutsu"]
+            "args": ["Century Boys"]
+        },
+        {
+            "name": "Python: Celery linux",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "celery",
+            "args": ["-A", "utils.tarefas", "worker", "--pool=gevent", "-l", "INFO"],
+            "jinja": true,
+            "justMyCode": true,
+            "gevent": true
         }
     ]
 }

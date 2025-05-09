@@ -21,6 +21,23 @@
             "jinja": true,
             "justMyCode": true,
             "gevent": true
+        },
+        {
+            "name": "Python: Celery Windows",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "celery",
+            "args": [
+                "-A",
+                "utils.tarefas",
+                "worker",
+                "--pool=threads",
+                "-l",
+                "INFO"
+            ],
+            "jinja": true,
+            "justMyCode": true,
+            "gevent": true
         }
     ]
 }

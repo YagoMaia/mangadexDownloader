@@ -35,6 +35,7 @@ def baixar_cover(covers: list, id_manga: str, nome_manga: str) -> bool:
         volume = folder.split(" ")[1]
         if volume.isnumeric():
             volume = int(volume)
+            print(volume)
             cover_vol = covers[volume - 1]
             cover_file = cover_vol["attributes"]["fileName"]
             folder_volume = f"{folder_manga}/{folder}"

@@ -1,8 +1,8 @@
 from classes.mangas_diarios import MangasDiarios
 from utils.formatação_texto import generate_ascii_art
-from utils.notification import notification
+# from utils.notification import notification
 
-notification("Teste", "Teste")
+# notification("Teste", "Teste")
 
 generate_ascii_art("   MangaDex")
 leituras_atuais = MangasDiarios()
